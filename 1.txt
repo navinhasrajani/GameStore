@@ -1,0 +1,29 @@
+$mail=new PHPMailer(true);
+		try{
+			$mail->SMTPDebug=0;
+			$mail->isSMTP();
+			$mail->Host="smtp.gmail.com";
+			$mail->SMTPAuth=true;
+			$mail->Username="dev.260802@gmail.com";
+			$mail->Password="dev patel2608";
+			$mail->SMTPSecure=PHPMailer::ENCRYPTION_STARTTLS;
+			$mail->Port=587;
+			$mail->setFrom("dev.260802@gmail.com","gamestore.com");
+			$mail->addAddress($email,$name);
+			$mail->isHTML(true);
+			$verification_code=substr(number_format(time()*rand(),0,"",""),0,6);
+			$mail->Subjecct="Email Verification";
+			$mail->Body='<p>Your verification code is : <b style="font-size: 30px;">'.
+				$verification_code.'</b></p>';
+			$mail->send();
+			$encrypted_password=password_hash($password,PASSWORD_DEFAULT);
+            $conn = mysqli_connect("localhost", "root","root","gamestore");
+            $sql = "INSERT INTO persons(FirstName, LastName, Email, Password,age,verifiaction_code,email_verified_at) VALUES('$fname','$lname','$email','$pass','$age',''.$verication_code.'',NUll)";
+			mysqli_query($conn, $sql);
+			header("Location:  email-verification.php?email=".$email);
+ 
+			
+		}
+        catch(Exception $e){
+			echo "Mesage Could not be sent. Mailer Error:{$mail->ErrorInfo}";
+		}
